@@ -78,9 +78,8 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-
+    var playgameid;
     firebase.database().ref("lobby").on("value", function (snapshot) {
-        var gameplayid;
         var counter = 1;
         let gamesObj = snapshot.val();
         let gameids = Object.keys(gamesObj);
@@ -108,48 +107,48 @@
         $("#leave").on("click", function () {
             $(".currentGame").hide();
         });
-        playGame(playgameid);
+        $("#reset").on("click", function () {
+            resetGameState();
+        });
         $("#players").html("Players: " + gamesObj[playgameid].players);
         displayGameState(gamesObj[playgameid].game);
     });
 
-    var playGame = function (gameid) {
-        //firebase.database().ref("lobby/" + gameid).once("value", function (snapshot) {
-        //$("#players").html("Players: " + snapshot.val().players);
-        //displayGameState(snapshot.val().game);
-        //});
+    //firebase.database().ref("lobby/" + gameid).once("value", function (snapshot) {
+    //$("#players").html("Players: " + snapshot.val().players);
+    //displayGameState(snapshot.val().game);
+    //});
 
-        let resetGameState = function () {
-            let keys = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
-            keys.map(key => {
-                setValue(key, ".");
-            })
-        }
-
-        let setValue = function (coords, val) {
-            firebase.database().ref("lobby/" + gameid + "/game/" + coords).set(val);
-        }
-
-        $(`[data-location]`).on("click", function () {
-            let locationVal;
-            locationVal = $(this).attr('data-location');
-            firebase.database().ref("lobby/" + gameid + "/game/" + locationVal).once("value", function (snapshot2) {
-                let dataVal = snapshot2.val();
-                if (dataVal == "x") {
-                    console.log("Set To O");
-                    setValue(locationVal, "o");
-                }
-                else if (dataVal == "o") {
-                    console.log("Set To .");
-                    setValue(locationVal, ".");
-                }
-                else if (dataVal == ".") {
-                    console.log("Set To X");
-                    setValue(locationVal, "x");
-                }
-            });
-        });
+    let resetGameState = function () {
+        let keys = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
+        keys.map(key => {
+            setValue(key, ".");
+        })
     }
+
+    let setValue = function (coords, val) {
+        firebase.database().ref("lobby/" + playgameid + "/game/" + coords).set(val);
+    }
+
+    $(`[data-location]`).on("click", function () {
+        let locationVal;
+        locationVal = $(this).attr('data-location');
+        firebase.database().ref("lobby/" + playgameid + "/game/" + locationVal).once("value", function (snapshot2) {
+            let dataVal = snapshot2.val();
+            if (dataVal == "x") {
+                console.log("Set To O");
+                setValue(locationVal, "o");
+            }
+            else if (dataVal == "o") {
+                console.log("Set To .");
+                setValue(locationVal, ".");
+            }
+            else if (dataVal == ".") {
+                console.log("Set To X");
+                setValue(locationVal, "x");
+            }
+        });
+    });
 
     let displayGameState = function (gameState) {
         let keys = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
