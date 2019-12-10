@@ -106,6 +106,7 @@
         });
         $("#leave").on("click", function () {
             $(".currentGame").hide();
+            firebase.database().ref("lobby/" + playgameid).update({ players: --gamesObj[playgameid].players });
         });
         $("#reset").on("click", function () {
             resetGameState();
@@ -113,11 +114,6 @@
         $("#players").html("Players: " + gamesObj[playgameid].players);
         displayGameState(gamesObj[playgameid].game);
     });
-
-    //firebase.database().ref("lobby/" + gameid).once("value", function (snapshot) {
-    //$("#players").html("Players: " + snapshot.val().players);
-    //displayGameState(snapshot.val().game);
-    //});
 
     let resetGameState = function () {
         let keys = ["00", "01", "02", "10", "11", "12", "20", "21", "22"];
