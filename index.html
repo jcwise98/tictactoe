@@ -1,21 +1,35 @@
 <html>
-    <head>
-        <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-database.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    </head>
 
-    <body>
-        <h2 id=Title>Lobby<h2/>
+<head>
+
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.1.0/firebase-auth.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <h2 id=Title>Lobby
+        <h2 />
 
         <button id=newGame>New Game</button>
         <br>
         <br>
         <button id=showGames>Join Game</button>
-    </body>
+        <ul class="hidden" id=gameslist>
+        <li>Game 1</li>
+        <li>Game 2</li>
+        </ul>
+</body>
 
-    <script>
-        var firebaseConfig = {
+<script>
+    var firebaseConfig = {
         apiKey: "AIzaSyAJIdWlFtX43oypNbkX-NMo0qF8L-zvEHQ",
         authDomain: "tictactoe-d45dc.firebaseapp.com",
         databaseURL: "https://tictactoe-d45dc.firebaseio.com",
@@ -23,13 +37,27 @@
         storageBucket: "",
         messagingSenderId: "291312481664",
         appId: "1:291312481664:web:500f0bfede5885bc1dfd65"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
 
 
-        $(newGame).on("click", function(){
-            window.location.href='tictactoe.html'
+    $(showGames).on("click", function () {
+        $("#gameslist").toggleClass("hidden");
+    });
+
+    $(newGame).on("click", function () {
+        //window.location.href = 'tictactoe.html'
+        var ul = document.getElementById("gameslist");
+        var li = document.createElement("li");
+        li.appendChild(document.createTextNode("Game Next"));
+        ul.appendChild(li);
+    });
+
+    $("#gameslist li").on("click", function(evt){
+          //$(evt.currentTarget)
+          window.location.href = 'tictactoe.html'
         });
-    </script>
+</script>
+
 </html>
