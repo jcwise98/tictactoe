@@ -41,7 +41,7 @@
     </div>
     <div class="currentGame hidden">
         <h1 id=GameTitle>
-            <h2 id=players>Players: </h2>
+            <h2 id=players></h2>
             <h1 />
 
             <div id="current">
@@ -78,14 +78,17 @@
     // Initialize Firebase
     firebase.initializeApp(firebaseConfig);
 
-    var playgameid;
-    firebase.database().ref("lobby").on("value", function (snapshot) {
-        var counter = 1;
-        let gamesObj = snapshot.val();
-        let gameids = Object.keys(gamesObj);
-        $("#gameslist").html('');
-        gameids.map(gameid => {
-            $("#gameslist").append(`
+    $(document).ready(function () {
+
+
+        var playgameid;
+        firebase.database().ref("lobby").on("value", function (snapshot) {
+            var counter = 1;
+            let gamesObj = snapshot.val();
+            let gameids = Object.keys(gamesObj);
+            $("#gameslist").html('');
+            gameids.map(gameid => {
+                $("#gameslist").append(`
             <li>
             
             ${gamesObj[gameid].title}
@@ -94,25 +97,26 @@
             <br>Players:
             ${gamesObj[gameid].players}
             </li>`); counter++;
-        });
+            });
 
-        $(".showgame").on("click", function (evt) {
-            $(".currentGame").show();
-            let gameid = $(evt.currentTarget).attr("data-gameid");
-            playgameid = gameid;
-            firebase.database().ref("lobby/" + gameid).update({ players: ++gamesObj[gameid].players });
-            $("#GameTitle").html('Tic Tac Toe Game');
-            $("#GameTitle").append(gameid);
+            $(".showgame").on("click", function (evt) {
+                $(".currentGame").show();
+                let gameid = $(evt.currentTarget).attr("data-gameid");
+                playgameid = gameid;
+                firebase.database().ref("lobby/" + gameid).update({ players: ++gamesObj[gameid].players });
+                $("#GameTitle").html('Tic Tac Toe Game');
+                $("#GameTitle").append(gameid);
+            });
+            $("#leave").on("click", function () {
+                $(".currentGame").hide();
+                firebase.database().ref("lobby/" + playgameid).update({ players: --gamesObj[playgameid].players });
+            });
+            $("#reset").on("click", function () {
+                resetGameState();
+            });
+            $("#players").html("Players: " + gamesObj[playgameid].players);
+            displayGameState(gamesObj[playgameid].game);
         });
-        $("#leave").on("click", function () {
-            $(".currentGame").hide();
-            firebase.database().ref("lobby/" + playgameid).update({ players: --gamesObj[playgameid].players });
-        });
-        $("#reset").on("click", function () {
-            resetGameState();
-        });
-        $("#players").html("Players: " + gamesObj[playgameid].players);
-        displayGameState(gamesObj[playgameid].game);
     });
 
     let resetGameState = function () {
